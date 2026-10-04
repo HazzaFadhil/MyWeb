@@ -57,6 +57,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['action'] == 'hapus') {
     exit;
 }
 
+// ===============================
+// PROSES UBAH DATA
+// ===============================
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_POST['action'] == 'ubah') {
+
+    $kode_lama = $_POST['kode_lama'];
+
+    $kode = $_POST['kode'];
+    $nama = $_POST['nama'];
+    $semester = $_POST['semester'];
+    $dosen_id = $_POST['dosen_id'];
+    $sks = $_POST['sks'];
+
+    $sql = "UPDATE mata_kuliah
+            SET kode = :kode,
+                nama = :nama,
+                semester = :semester,
+                dosen_id = :dosen_id,
+                sks = :sks
+            WHERE kode = :kode_lama";
+
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->execute([
+        ':kode' => $kode,
+        ':nama' => $nama,
+        ':semester' => $semester,
+        ':dosen_id' => $dosen_id,
+        ':sks' => $sks,
+        ':kode_lama' => $kode_lama
+    ]);
+
+    header("Location: mata-kuliah.php");
+    exit;
+}
 
 // ===============================
 // MENGAMBIL DATA
@@ -81,9 +117,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <title>Mata Kuliah</title>
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
@@ -102,28 +136,20 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </a>
 
 
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 
                 <span class="navbar-toggler-icon"></span>
 
             </button>
 
 
-            <div
-                class="collapse navbar-collapse"
-                id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav">
 
                 <ul class="navbar-nav">
 
                     <li class="nav-item">
 
-                        <a
-                            class="nav-link"
-                            href="index.php">
+                        <a class="nav-link" href="index.php">
 
                             Home
 
@@ -134,9 +160,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     <li class="nav-item">
 
-                        <a
-                            class="nav-link active"
-                            href="mata-kuliah.php">
+                        <a class="nav-link active" href="mata-kuliah.php">
 
                             Mata Kuliah
 
@@ -171,11 +195,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <!-- TOMBOL TAMBAH -->
 
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#tambahMataKuliah">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahMataKuliah">
 
                     + Tambah Mata Kuliah
 
@@ -184,16 +204,17 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <!-- TOMBOL HAPUS -->
 
-                <button
-                    type="button"
-                    class="btn btn-danger"
-                    data-bs-toggle="modal"
-                    data-bs-target="#hapusMataKuliah">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#hapusMataKuliah">
 
                     Hapus Mata Kuliah
 
                 </button>
 
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ubahMataKuliah">
+
+                    Ubah Mata Kuliah
+
+                </button>
             </div>
 
         </div>
@@ -338,10 +359,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- ================================= -->
 
 
-    <div
-        class="modal fade"
-        id="tambahMataKuliah"
-        tabindex="-1">
+    <div class="modal fade" id="tambahMataKuliah" tabindex="-1">
 
 
         <div class="modal-dialog">
@@ -360,10 +378,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </h5>
 
 
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
 
                     </button>
 
@@ -380,10 +395,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <!-- ACTION -->
 
-                        <input
-                            type="hidden"
-                            name="action"
-                            value="tambah">
+                        <input type="hidden" name="action" value="tambah">
 
 
                         <!-- KODE -->
@@ -397,11 +409,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </label>
 
 
-                            <input
-                                type="text"
-                                class="form-control"
-                                name="kode"
-                                required>
+                            <input type="text" class="form-control" name="kode" required>
 
                         </div>
 
@@ -418,11 +426,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </label>
 
 
-                            <input
-                                type="text"
-                                class="form-control"
-                                name="nama"
-                                required>
+                            <input type="text" class="form-control" name="nama" required>
 
                         </div>
 
@@ -439,11 +443,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </label>
 
 
-                            <input
-                                type="number"
-                                class="form-control"
-                                name="semester"
-                                required>
+                            <input type="number" class="form-control" name="semester" required>
 
                         </div>
 
@@ -460,10 +460,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </label>
 
 
-                            <input
-                                type="number"
-                                class="form-control"
-                                name="dosen_id">
+                            <input type="number" class="form-control" name="dosen_id">
 
                         </div>
 
@@ -480,10 +477,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </label>
 
 
-                            <input
-                                type="number"
-                                class="form-control"
-                                name="sks">
+                            <input type="number" class="form-control" name="sks">
 
                         </div>
 
@@ -495,19 +489,14 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="modal-footer">
 
 
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
 
                             Batal
 
                         </button>
 
 
-                        <button
-                            type="submit"
-                            class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary">
 
                             Simpan
 
@@ -533,10 +522,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- ================================= -->
 
 
-    <div
-        class="modal fade"
-        id="hapusMataKuliah"
-        tabindex="-1">
+    <div class="modal fade" id="hapusMataKuliah" tabindex="-1">
 
 
         <div class="modal-dialog">
@@ -555,10 +541,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </h5>
 
 
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
 
                     </button>
 
@@ -575,10 +558,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <!-- ACTION -->
 
-                        <input
-                            type="hidden"
-                            name="action"
-                            value="hapus">
+                        <input type="hidden" name="action" value="hapus">
 
 
                         <div class="mb-3">
@@ -591,10 +571,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </label>
 
 
-                            <select
-                                class="form-select"
-                                name="kode"
-                                required>
+                            <select class="form-select" name="kode" required>
 
 
                                 <option value="">
@@ -606,8 +583,7 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                 <?php foreach ($mata_kuliah as $mk): ?>
 
-                                    <option
-                                        value="<?php echo htmlspecialchars($mk['kode']); ?>">
+                                    <option value="<?php echo htmlspecialchars($mk['kode']); ?>">
 
                                         <?php
                                         echo htmlspecialchars($mk['kode']);
@@ -642,19 +618,14 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="modal-footer">
 
 
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
 
                             Batal
 
                         </button>
 
 
-                        <button
-                            type="submit"
-                            class="btn btn-danger">
+                        <button type="submit" class="btn btn-danger">
 
                             Hapus
 
@@ -673,16 +644,237 @@ $mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     </div>
 
+    <!-- ================================= -->
+<!-- MODAL UBAH MATA KULIAH -->
+<!-- ================================= -->
+
+<div
+    class="modal fade"
+    id="ubahMataKuliah"
+    tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Ubah Mata Kuliah
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <form method="POST">
+
+                <div class="modal-body">
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="ubah">
+
+
+                    <!-- DROPDOWN -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Pilih Mata Kuliah
+                        </label>
+
+                        <select
+                            id="pilihMataKuliah"
+                            class="form-select"
+                            name="kode_lama"
+                            required>
+
+                            <option value="">
+                                -- Pilih Mata Kuliah --
+                            </option>
+
+                            <?php foreach ($mata_kuliah as $mk): ?>
+
+                                <option
+                                    value="<?php echo htmlspecialchars($mk['kode']); ?>"
+                                    data-kode="<?php echo htmlspecialchars($mk['kode']); ?>"
+                                    data-nama="<?php echo htmlspecialchars($mk['nama']); ?>"
+                                    data-semester="<?php echo htmlspecialchars($mk['semester']); ?>"
+                                    data-dosen="<?php echo htmlspecialchars($mk['dosen_id']); ?>"
+                                    data-sks="<?php echo htmlspecialchars($mk['sks']); ?>">
+
+                                    <?php echo htmlspecialchars($mk['kode']); ?>
+                                    -
+                                    <?php echo htmlspecialchars($mk['nama']); ?>
+
+                                </option>
+
+                            <?php endforeach; ?>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- KODE -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Kode Mata Kuliah
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="kodeUbah"
+                            name="kode"
+                            required>
+
+                    </div>
+
+
+                    <!-- NAMA -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Nama Mata Kuliah
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="namaUbah"
+                            name="nama"
+                            required>
+
+                    </div>
+
+
+                    <!-- SEMESTER -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Semester
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="semesterUbah"
+                            name="semester"
+                            required>
+
+                    </div>
+
+
+                    <!-- DOSEN -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Dosen ID
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="dosenUbah"
+                            name="dosen_id">
+
+                    </div>
+
+
+                    <!-- SKS -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            SKS
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="sksUbah"
+                            name="sks">
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Batal
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-warning">
+
+                        Simpan Perubahan
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 
     <!-- BOOTSTRAP JAVASCRIPT -->
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
 
     </script>
 
+    <script>
 
+    document.getElementById('pilihMataKuliah').addEventListener('change', function () {
+
+        const pilihan = this.options[this.selectedIndex];
+
+        document.getElementById('kodeUbah').value =
+            pilihan.getAttribute('data-kode');
+
+        document.getElementById('namaUbah').value =
+            pilihan.getAttribute('data-nama');
+
+        document.getElementById('semesterUbah').value =
+            pilihan.getAttribute('data-semester');
+
+        document.getElementById('dosenUbah').value =
+            pilihan.getAttribute('data-dosen');
+
+        document.getElementById('sksUbah').value =
+            pilihan.getAttribute('data-sks');
+
+    });
+
+</script>
 </body>
 
 </html>
