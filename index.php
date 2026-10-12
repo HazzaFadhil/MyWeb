@@ -1,246 +1,68 @@
 <?php
 // Koneksi Database
 include 'koneksi.php';
+
+// Mengambil data mata kuliah
+$stmt = $pdo->prepare("SELECT * FROM mata_kuliah");
+$stmt->execute();
+$mata_kuliah = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Include Layout Header & Sidebar
+include 'layouts/header.php';
+include 'layouts/sidebar.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<!-- AREA KONTEN UTAMA -->
+<div class="col-md-9 col-lg-10">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mata Kuliah</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+    <!-- JUDUL HALAMAN -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Dashboard Utama</h1>
+        <a href="mata-kuliah.php" class="btn btn-outline-primary">
+            Kelola Mata Kuliah &rarr;
+        </a>
+    </div>
 
-<body>
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.php">
-                MyWeb
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="mata-kuliah.php">
-                            Mata Kuliah
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
+    <!-- CARD TABEL (SAMA PERSIS DENGAN FORMAT MATA-KULIAH) -->
+    <div class="card">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">Pratinjau Data Mata Kuliah</h5>
         </div>
-    </nav>
-
-
-    <!-- ISI HALAMAN -->
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <h1>Daftar Mata Kuliah</h1>
-            <!-- TOMBOL TAMBAH -->
-        </div>
-
-
-        <!-- TABEL -->
-        <table class="table table-striped mt-4">
-            <thead>
-                <tr>
-                    <th>Kode</th>
-                    <th>Nama Mata Kuliah</th>
-                    <th>Semester</th>
-                    <th>Dosen ID</th>
-                    <th>SKS</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <?php if (!empty($mata_kuliah)): ?>
-                    <?php foreach ($mata_kuliah as $mk): ?>
-                        <tr>
-                            <td>
-                                <?php echo htmlspecialchars($mk['kode']); ?>
-                            </td>
-
-                            <td>
-                                <?php echo htmlspecialchars($mk['nama']); ?>
-                            </td>
-
-                            <td>
-                                <?php echo htmlspecialchars($mk['semester']); ?>
-                            </td>
-
-
-                            <td>
-                                <?php
-                                if (empty($mk['dosen_id'])) {
-                                    echo "-";
-                                } else {
-                                    echo htmlspecialchars($mk['dosen_id']);
-                                }
-                                ?>
-                            </td>
-
-                            <td>
-                                <?php
-                                if (empty($mk['sks'])) {
-                                    echo "-";
-                                } else {
-                                    echo htmlspecialchars($mk['sks']);
-                                }
-                                ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead>
                     <tr>
-                        <td colspan="5">
-                            Tidak ada data mata kuliah.
-                        </td>
+                        <th>Kode</th>
+                        <th>Nama Mata Kuliah</th>
+                        <th>Semester</th>
+                        <th>Dosen ID</th>
+                        <th>SKS</th>
                     </tr>
-
-                <?php endif; ?>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-
-    <!-- MODAL TAMBAH MATA KULIAH -->
-
-    <div class="modal fade" id="tambahMataKuliah" tabindex="-1">
-
-        <div class="modal-dialog">
-
-            <div class="modal-content">
-
-                <div class="modal-header">
-
-                    <h5 class="modal-title">
-                        Tambah Mata Kuliah
-                    </h5>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal">
-                    </button>
-
-                </div>
-
-
-                <form method="POST">
-
-                    <div class="modal-body">
-
-                        <!-- KODE -->
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                Kode Mata Kuliah
-                            </label>
-
-                            <input type="text" class="form-control" name="kode" required>
-
-                        </div>
-
-
-                        <!-- NAMA -->
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                Nama Mata Kuliah
-                            </label>
-
-                            <input type="text" class="form-control" name="nama" required>
-
-                        </div>
-
-
-                        <!-- SEMESTER -->
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                Semester
-                            </label>
-
-                            <input type="number" class="form-control" name="semester" required>
-
-                        </div>
-
-
-                        <!-- DOSEN -->
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                Dosen ID
-                            </label>
-
-                            <input type="number" class="form-control" name="dosen_id">
-
-                        </div>
-
-
-                        <!-- SKS -->
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                SKS
-                            </label>
-
-                            <input type="number" class="form-control" name="sks">
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="modal-footer">
-
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-
-                            Batal
-
-                        </button>
-
-
-                        <button type="submit" class="btn btn-primary">
-
-                            Simpan
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
+                </thead>
+                <tbody>
+                    <?php if (!empty($mata_kuliah)): ?>
+                        <?php foreach ($mata_kuliah as $mk): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($mk['kode']); ?></td>
+                                <td><?php echo htmlspecialchars($mk['nama']); ?></td>
+                                <td><?php echo htmlspecialchars($mk['semester']); ?></td>
+                                <td><?php echo empty($mk['dosen_id']) ? "-" : htmlspecialchars($mk['dosen_id']); ?></td>
+                                <td><?php echo empty($mk['sks']) ? "-" : htmlspecialchars($mk['sks']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="5" class="text-center py-3">Tidak ada data mata kuliah.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
-
     </div>
 
+</div> <!-- Penutup col-md-9 -->
 
-    <!-- BOOTSTRAP JAVASCRIPT -->
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
-    </script>
-
-</body>
-
-</html>
+<?php 
+// Include Footer
+include 'layouts/footer.php'; 
+?>
